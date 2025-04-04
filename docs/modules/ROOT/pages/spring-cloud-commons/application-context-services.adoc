@@ -1,18 +1,31 @@
 [[spring-cloud-context-application-context-services]]
 = Spring Cloud Context: Application Context Services
 
-Spring Boot has an opinionated view of how to build an application with Spring.
-For instance, it has conventional locations for common configuration files and has endpoints for common management and monitoring tasks.
-Spring Cloud builds on top of that and adds a few features that many components in a system would use or occasionally need.
+* Spring Boot
+  ** 's view == how to build an application -- via -- Spring
+  ** has
+    *** common configuration files | conventional locations
+    *** endpoints -- for -- common management & monitoring tasks
+* Spring Cloud
+  ** Spring Boot + features / MANY components | system use
 
 [[the-bootstrap-application-context]]
 == The Bootstrap Application Context
 
-A Spring Cloud application operates by creating a "`bootstrap`" context, which is a parent context for the main application.
-This context is responsible for loading configuration properties from the external sources and for decrypting properties in the local external configuration files.
-The two contexts share an `Environment`, which is the source of external properties for any Spring application.
-By default, bootstrap properties (not `bootstrap.properties` but properties that are loaded during the bootstrap phase) are added with high precedence, so they cannot be overridden by local configuration.
+* Spring Cloud application
+  ** 💡operates -- by creating a -- "`bootstrap`" context 💡
+    *** 👀== parent context | main application👀
+    *** -- responsible for --
+      **** loading external sources' configuration properties -- for decrypting -- properties | local external configuration files
+* "`bootstrap`" context & "`main`" context
+  ** 👀share an `Environment`👀
+    *** == Spring application's source of EXTERNAL properties
+* bootstrap properties
+  ** ⚠️!= `bootstrap.properties`⚠️
+  ** == properties / loaded | bootstrap phase
+    *** added / HIGH precedence -> NOT overridden -- by -- local configuration
 
+* TODO:
 The bootstrap context uses a different convention for locating external configuration than the main application context.
 Instead of `application.yml` (or `.properties`), you can use `bootstrap.yml`, keeping the external configuration for bootstrap and main context nicely separate.
 The following listing shows an example:
@@ -37,13 +50,15 @@ You can disable the bootstrap process completely by setting `spring.cloud.bootst
 [[application-context-hierarchies]]
 == Application Context Hierarchies
 
-If you build an application context from `SpringApplication` or `SpringApplicationBuilder`, the Bootstrap context is added as a parent to that context.
-It is a feature of Spring that child contexts inherit property sources and profiles from their parent, so the "`main`" application context contains additional property sources, compared to building the same context without Spring Cloud Config.
-The additional property sources are:
-
-* "`bootstrap`": If any `PropertySourceLocators` are found in the bootstrap context and if they have non-empty properties, an optional `CompositePropertySource` appears with high priority.
-An example would be properties from the Spring Cloud Config Server.
-See "`xref:spring-cloud-commons/application-context-services.adoc#customizing-bootstrap-property-sources[Customizing the Bootstrap Property Sources]`" for how to customize the contents of this property source.
+* if you build an application context ( -- from -- `SpringApplication` or `SpringApplicationBuilder`) -> Bootstrap context == application context' parent /
+  ** ⭐️("`main`" application context + Spring Cloud Config)'s property sources > ("`main`" application context)'s property sources⭐️
+    *** Reason: 🧠child contexts -- inherit -- property & profiles -- from -- their parent🧠
+      **** == Spring's feature
+    *** ADDITIONAL property sources
+      **** "`bootstrap`"
+        ***** TODO: If any `PropertySourceLocators` are found in the bootstrap context and if they have non-empty properties, an optional `CompositePropertySource` appears with high priority.
+      An example would be properties from the Spring Cloud Config Server.
+      See "`xref:spring-cloud-commons/application-context-services.adoc#customizing-bootstrap-property-sources[Customizing the Bootstrap Property Sources]`" for how to customize the contents of this property source.
 
 NOTE:  Prior to Spring Cloud 2022.0.3 `PropertySourceLocators` (including the ones for Spring Cloud Config) were run during
 the main application context and not in the Bootstrap context.  You can force `PropertySourceLocators` to be run during the
